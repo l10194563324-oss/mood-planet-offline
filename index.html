@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#C8DDE2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="心晴小怪">
+    <title>心晴小怪</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%23C8DDE2' width='192' height='192' rx='40'/%3E%3Ctext x='96' y='120' font-size='100' text-anchor='middle'%3E🌸%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+    <div class="app">
+        <!-- ==================== 主页：心情星球 ==================== -->
+        <main class="page active" id="page-home">
+            <header class="page-header">
+                <h1 class="app-title">心晴小怪</h1>
+                <p class="app-subtitle" id="homeSubtitle">今天的心情是什么样子呀？</p>
+            </header>
+
+            <section class="planet-stage">
+                <!-- 全屏渐变背景层 -->
+                <div class="planet-bg-layer" id="planetBgLayer"></div>
+
+                <!-- 星球容器 -->
+                <div class="planet-wrapper" id="planetWrapper">
+                    <!-- 星球本体 -->
+                    <div class="planet" id="planet">
+                        <div class="planet-face" id="planetFace">
+                            <div class="planet-eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="planet-mouth" id="planetMouth"></div>
+                        </div>
+                        <!-- 中心变形图形 -->
+                        <div class="planet-shape" id="planetShape"></div>
+                    </div>
+
+                    <!-- 天气效果层 -->
+                    <div class="weather-layer" id="weatherLayer"></div>
+
+                    <!-- 植物装饰 -->
+                    <div class="plant-layer" id="plantLayer">
+                        <div class="plant plant-left">
+                            <div class="stem"></div>
+                            <div class="leaf leaf-1"></div>
+                            <div class="leaf leaf-2"></div>
+                        </div>
+                        <div class="plant plant-right">
+                            <div class="stem"></div>
+                            <div class="leaf leaf-1"></div>
+                            <div class="leaf leaf-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- 星球光晕 -->
+                    <div class="planet-glow" id="planetGlow"></div>
+                </div>
+
+                <!-- 心情标签 -->
+                <div class="mood-badge" id="moodBadge">
+                    <span class="mood-emoji" id="moodEmoji">😌</span>
+                    <span class="mood-name" id="moodName">平静</span>
+                </div>
+
+                <!-- 当前心情描述 -->
+                <div class="mood-desc-tag" id="moodDescTag"></div>
+            </section>
+
+            <!-- 记录按钮 -->
+            <button class="record-btn" id="recordBtn">
+                <span class="record-btn-icon">✨</span>
+                <span>记录此刻心情</span>
+            </button>
+        </main>
+
+        <!-- ==================== 今日页：心情流 ==================== -->
+        <main class="page" id="page-today">
+            <header class="page-header">
+                <h1 class="page-title">今日心情流</h1>
+                <p class="page-subtitle" id="todayDate"></p>
+            </header>
+
+            <section class="river-container">
+                <div class="river-bg">
+                    <svg class="river-wave" viewBox="0 0 400 600" preserveAspectRatio="none">
+                        <path class="river-path" d="M0,300 C100,280 200,320 300,290 C350,275 380,310 400,300 L400,600 L0,600 Z" fill="rgba(180,210,220,0.15)"/>
+                        <path class="river-path river-path-2" d="M0,320 C80,340 180,300 280,330 C340,345 370,310 400,320 L400,600 L0,600 Z" fill="rgba(180,210,220,0.1)"/>
+                    </svg>
+                </div>
+
+                <div class="river-flow" id="riverFlow">
+                    <div class="river-empty">
+                        <div class="river-empty-icon">🌊</div>
+                        <p>今天还没有心情记录哦</p>
+                        <p class="river-empty-hint">去主页记录你的第一个心情吧</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ==================== 日历页：心情花园 ==================== -->
+        <main class="page" id="page-calendar">
+            <header class="page-header">
+                <h1 class="page-title">心情花园</h1>
+                <p class="page-subtitle">每一朵花都是一段心情</p>
+            </header>
+
+            <section class="calendar-container">
+                <!-- 月份导航 -->
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" id="calPrev">‹</button>
+                    <span class="calendar-month" id="calMonthLabel"></span>
+                    <button class="calendar-nav-btn" id="calNext">›</button>
+                </div>
+
+                <!-- 星期标题 -->
+                <div class="calendar-weekdays">
+                    <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                </div>
+
+                <!-- 日期网格 -->
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </section>
+
+            <!-- 花语说明 -->
+            <section class="flower-legend">
+                <h3 class="flower-legend-title">花语说明</h3>
+                <div class="flower-legend-grid">
+                    <div class="flower-legend-item">
+                        <span class="flower-legend-icon">🌻</span>
+                        <span class="flower-legend-text">开心</span>
+                    </div>
+                    <div class="flower-legend-item">
+                        <span class="flower-legend-icon">🌸</span>
+                        <span class="flower-legend-text">平静</span>
+                    </div>
+                    <div class="flower-legend-item">
+                        <span class="flower-legend-icon">🥀</span>
+                        <span class="flower-legend-text">疲惫</span>
+                    </div>
+                    <div class="flower-legend-item">
+                        <span class="flower-legend-icon">💧</span>
+                        <span class="flower-legend-text">难过</span>
+                    </div>
+                    <div class="flower-legend-item">
+                        <span class="flower-legend-icon">🌾</span>
+                        <span class="flower-legend-text">焦虑</span>
+                    </div>
+                    <div class="flower-legend-item">
+                        <span class="flower-legend-icon">🌺</span>
+                        <span class="flower-legend-text">生气</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ==================== 统计页：流星轨迹 ==================== -->
+        <main class="page" id="page-stats">
+            <header class="page-header">
+                <h1 class="page-title">流星轨迹</h1>
+                <p class="page-subtitle">星星排成温柔弧线</p>
+            </header>
+
+            <section class="stats-container">
+                <!-- 心情星轨 -->
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <span class="stats-card-title">心情星轨</span>
+                        <span class="stats-card-hint">点击晃一晃</span>
+                    </div>
+                    <div class="mood-orbit-chart" id="moodOrbitChart">
+                        <svg class="mood-orbit-svg" id="moodOrbitSvg" viewBox="0 0 340 120" preserveAspectRatio="none">
+                            <!-- 动态生成路径和点 -->
+                        </svg>
+                    </div>
+                    <p class="stats-chart-label">最近 7 天的心情变化</p>
+                </div>
+
+                <!-- 心情分布 -->
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <span class="stats-card-title">心情分布</span>
+                    </div>
+                    <div class="mood-distribution" id="moodDistribution">
+                        <!-- 动态生成心情分布条 -->
+                    </div>
+                </div>
+
+                <!-- 记录天数统计 -->
+                <p class="stats-total-days" id="statsTotalDays">已记录 0 天的心情</p>
+            </section>
+        </main>
+
+        <!-- ==================== 我的页 ==================== -->
+        <main class="page" id="page-profile">
+            <header class="page-header">
+                <h1 class="page-title">我的</h1>
+                <p class="page-subtitle">你的小角落</p>
+            </header>
+            <section class="profile-section">
+                <div class="profile-avatar-area">
+                    <div class="profile-avatar"><span>🧸</span></div>
+                    <div class="profile-name">心晴记录者</div>
+                </div>
+                <div class="settings-list">
+                    <div class="settings-item" id="themeSettingsItem">
+                        <div class="settings-item-left">
+                            <div class="settings-icon" style="background:linear-gradient(135deg,#E8D5C4,#D4B5A0)"><span>🎨</span></div>
+                            <div class="settings-text">
+                                <span class="settings-label">换皮肤</span>
+                                <span class="settings-desc" id="themeDesc">莫兰迪经典</span>
+                            </div>
+                        </div>
+                        <div class="settings-arrow">›</div>
+                    </div>
+                    <div class="settings-item" id="reminderSettingsItem">
+                        <div class="settings-item-left">
+                            <div class="settings-icon" style="background:linear-gradient(135deg,#C5D5C5,#A8BFA8)"><span>🔔</span></div>
+                            <div class="settings-text">
+                                <span class="settings-label">每日提醒</span>
+                                <span class="settings-desc" id="reminderDesc">未设置</span>
+                            </div>
+                        </div>
+                        <div class="settings-arrow">›</div>
+                    </div>
+                    <div class="settings-item" id="clearDataSettingsItem">
+                        <div class="settings-item-left">
+                            <div class="settings-icon" style="background:linear-gradient(135deg,#D5C5D5,#BFA8BF)"><span>🗑️</span></div>
+                            <div class="settings-text">
+                                <span class="settings-label">清空数据</span>
+                                <span class="settings-desc">数据仅存本地</span>
+                            </div>
+                        </div>
+                        <div class="settings-arrow">›</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ==================== 底部导航 ==================== -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-page="home"><span class="nav-icon">🪐</span><span class="nav-label">主页</span></a>
+            <a href="#" class="nav-item" data-page="today"><span class="nav-icon">🌊</span><span class="nav-label">今日</span></a>
+            <a href="#" class="nav-item" data-page="calendar"><span class="nav-icon">🌸</span><span class="nav-label">日历</span></a>
+            <a href="#" class="nav-item" data-page="stats"><span class="nav-icon">⭐</span><span class="nav-label">统计</span></a>
+            <a href="#" class="nav-item" data-page="profile"><span class="nav-icon">🧸</span><span class="nav-label">我的</span></a>
+        </nav>
+
+        <!-- ==================== 心情记录弹窗 ==================== -->
+        <div class="modal" id="moodModal">
+            <div class="modal-content mood-modal-content" id="moodModalContent">
+                <!-- 步骤1：选择心情 -->
+                <div class="modal-step" id="modalStep1">
+                    <div class="modal-header">
+                        <h3>此刻的心情是？</h3>
+                        <button class="close-btn" id="closeModal">×</button>
+                    </div>
+                    <div class="mood-grid">
+                        <div class="mood-card" data-mood="happy">
+                            <div class="mood-card-icon">😊</div>
+                            <div class="mood-card-name">开心</div>
+                            <div class="mood-card-desc">星球发光</div>
+                        </div>
+                        <div class="mood-card" data-mood="calm">
+                            <div class="mood-card-icon">😌</div>
+                            <div class="mood-card-name">平静</div>
+                            <div class="mood-card-desc">微风植物</div>
+                        </div>
+                        <div class="mood-card" data-mood="tired">
+                            <div class="mood-card-icon">😴</div>
+                            <div class="mood-card-name">疲惫</div>
+                            <div class="mood-card-desc">星球变暗</div>
+                        </div>
+                        <div class="mood-card" data-mood="sad">
+                            <div class="mood-card-icon">😢</div>
+                            <div class="mood-card-name">难过</div>
+                            <div class="mood-card-desc">下小雨</div>
+                        </div>
+                        <div class="mood-card" data-mood="anxious">
+                            <div class="mood-card-icon">😰</div>
+                            <div class="mood-card-name">焦虑</div>
+                            <div class="mood-card-desc">小旋风</div>
+                        </div>
+                        <div class="mood-card" data-mood="angry">
+                            <div class="mood-card-icon">😤</div>
+                            <div class="mood-card-name">生气</div>
+                            <div class="mood-card-desc">小火山</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤2：记录详情 -->
+                <div class="modal-step modal-step-detail" id="modalStep2" style="display:none">
+                    <div class="modal-header">
+                        <h3 id="detailMoodTitle">记录开心</h3>
+                        <button class="close-btn" id="closeDetailModal">×</button>
+                    </div>
+
+                    <!-- 心情大标签 -->
+                    <div class="detail-mood-preview" id="detailMoodPreview">
+                        <span class="detail-emoji" id="detailEmoji">😊</span>
+                        <span class="detail-mood-name" id="detailMoodName">开心</span>
+                    </div>
+
+                    <!-- 情绪深度拉条 -->
+                    <div class="intensity-section">
+                        <div class="intensity-label">
+                            <span>情绪深度</span>
+                            <span class="intensity-value" id="intensityValue">3</span>
+                        </div>
+                        <div class="intensity-slider-wrap">
+                            <span class="intensity-hint intensity-hint-low">轻</span>
+                            <input type="range" class="intensity-slider" id="intensitySlider" min="1" max="5" value="3" step="1">
+                            <span class="intensity-hint intensity-hint-high">强</span>
+                        </div>
+                        <div class="intensity-dots" id="intensityDots">
+                            <span class="intensity-dot active" data-val="1"></span>
+                            <span class="intensity-dot" data-val="2"></span>
+                            <span class="intensity-dot active" data-val="3"></span>
+                            <span class="intensity-dot" data-val="4"></span>
+                            <span class="intensity-dot" data-val="5"></span>
+                        </div>
+                    </div>
+
+                    <!-- 短句输入 -->
+                    <div class="note-section">
+                        <span class="note-label">写点什么（选填）</span>
+                        <div class="note-input-wrap">
+                            <input type="text" class="note-input" id="noteInput" placeholder="10字以内描述心情…" maxlength="10">
+                            <span class="note-count"><span id="noteCount">0</span>/10</span>
+                        </div>
+                    </div>
+
+                    <!-- 贴纸选择 -->
+                    <div class="sticker-section">
+                        <span class="sticker-label">或者选个贴纸</span>
+                        <div class="sticker-grid" id="stickerGrid">
+                            <div class="sticker-item" data-sticker="🌟">🌟</div>
+                            <div class="sticker-item" data-sticker="💫">💫</div>
+                            <div class="sticker-item" data-sticker="☁️">☁️</div>
+                            <div class="sticker-item" data-sticker="🌈">🌈</div>
+                            <div class="sticker-item" data-sticker="🍀">🍀</div>
+                            <div class="sticker-item" data-sticker="🌙">🌙</div>
+                            <div class="sticker-item" data-sticker="🌸">🌸</div>
+                            <div class="sticker-item" data-sticker="☕">☕</div>
+                            <div class="sticker-item" data-sticker="🎵">🎵</div>
+                            <div class="sticker-item" data-sticker="📚">📚</div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="detail-actions">
+                        <button class="detail-back-btn" id="detailBackBtn">上一步</button>
+                        <button class="detail-save-btn" id="detailSaveBtn">记录完成 ✓</button>
+                    </div>
+
+                    <!-- 快速打卡提示 -->
+                    <div class="quick-tip" id="quickTip">
+                        <span>💡 连续记录中… 可直接点击上方心情切换</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 日历日期详情弹窗 ==================== -->
+        <div class="modal" id="dayDetailModal">
+            <div class="modal-content day-detail-content">
+                <div class="modal-header">
+                    <h3 id="dayDetailTitle">5月20日的心情</h3>
+                    <button class="close-btn" id="closeDayDetail">×</button>
+                </div>
+                <div class="day-detail-body" id="dayDetailBody">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 清空数据确认弹窗 ==================== -->
+        <div class="modal" id="clearDataModal">
+            <div class="modal-content clear-data-content">
+                <div class="modal-header">
+                    <h3>清空所有数据</h3>
+                    <button class="close-btn" id="closeClearData">×</button>
+                </div>
+                <div class="clear-data-body">
+                    <div class="clear-data-icon">⚠️</div>
+                    <p class="clear-data-warning">确定要清空所有心情记录吗？</p>
+                    <p class="clear-data-desc">此操作不可恢复，所有数据将被永久删除。</p>
+                    <div class="clear-data-actions">
+                        <button class="clear-data-cancel" id="cancelClearData">取消</button>
+                        <button class="clear-data-confirm" id="confirmClearData">确认清空</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 每日提醒设置弹窗 ==================== -->
+        <div class="modal" id="reminderModal">
+            <div class="modal-content reminder-content">
+                <div class="modal-header">
+                    <h3>每日提醒设置</h3>
+                    <button class="close-btn" id="closeReminder">×</button>
+                </div>
+                <div class="reminder-body">
+                    <!-- 时间选择 -->
+                    <div class="reminder-section">
+                        <label class="reminder-label">提醒时间</label>
+                        <div class="reminder-time-wrap">
+                            <input type="time" class="reminder-time-input" id="reminderTime" value="21:00">
+                        </div>
+                    </div>
+                    <!-- 提醒方式 -->
+                    <div class="reminder-section">
+                        <label class="reminder-label">提醒方式</label>
+                        <div class="reminder-options">
+                            <label class="reminder-option">
+                                <input type="radio" name="reminderType" value="vibrate" checked>
+                                <span class="reminder-option-box">
+                                    <span class="reminder-option-icon">📳</span>
+                                    <span class="reminder-option-text">震动提醒</span>
+                                </span>
+                            </label>
+                            <label class="reminder-option">
+                                <input type="radio" name="reminderType" value="popup">
+                                <span class="reminder-option-box">
+                                    <span class="reminder-option-icon">💬</span>
+                                    <span class="reminder-option-text">弹窗提醒</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- 开关 -->
+                    <div class="reminder-section reminder-toggle-section">
+                        <label class="reminder-label">开启提醒</label>
+                        <label class="reminder-switch">
+                            <input type="checkbox" id="reminderEnabled">
+                            <span class="reminder-switch-slider"></span>
+                        </label>
+                    </div>
+                    <button class="reminder-save-btn" id="saveReminder">保存设置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 主题皮肤选择弹窗 ==================== -->
+        <div class="modal" id="themeModal">
+            <div class="modal-content theme-content">
+                <div class="modal-header">
+                    <h3>选择主题皮肤</h3>
+                    <button class="close-btn" id="closeTheme">×</button>
+                </div>
+                <div class="theme-body">
+                    <div class="theme-grid">
+                        <div class="theme-item" data-theme="morandi">
+                            <div class="theme-preview morandi-preview">
+                                <div class="theme-preview-circle" style="background: linear-gradient(135deg, #D4A5A5, #A8B5A0);"></div>
+                            </div>
+                            <span class="theme-name">莫兰迪经典</span>
+                            <span class="theme-check">✓</span>
+                        </div>
+                        <div class="theme-item" data-theme="macaron">
+                            <div class="theme-preview macaron-preview">
+                                <div class="theme-preview-circle" style="background: linear-gradient(135deg, #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF);"></div>
+                            </div>
+                            <span class="theme-name">马卡龙甜心</span>
+                            <span class="theme-check">✓</span>
+                        </div>
+                        <div class="theme-item" data-theme="forest">
+                            <div class="theme-preview forest-preview">
+                                <div class="theme-preview-circle" style="background: linear-gradient(135deg, #2D5016, #4A7C59, #8FBC8F);"></div>
+                            </div>
+                            <span class="theme-name">森林秘境</span>
+                            <span class="theme-check">✓</span>
+                        </div>
+                        <div class="theme-item" data-theme="ocean">
+                            <div class="theme-preview ocean-preview">
+                                <div class="theme-preview-circle" style="background: linear-gradient(135deg, #1E3A5F, #4A90A4, #87CEEB);"></div>
+                            </div>
+                            <span class="theme-name">海洋之心</span>
+                            <span class="theme-check">✓</span>
+                        </div>
+                        <div class="theme-item" data-theme="sunset">
+                            <div class="theme-preview sunset-preview">
+                                <div class="theme-preview-circle" style="background: linear-gradient(135deg, #FF6B6B, #FFA07A, #FFD93D);"></div>
+                            </div>
+                            <span class="theme-name">落日余晖</span>
+                            <span class="theme-check">✓</span>
+                        </div>
+                        <div class="theme-item" data-theme="lavender">
+                            <div class="theme-preview lavender-preview">
+                                <div class="theme-preview-circle" style="background: linear-gradient(135deg, #6B5B95, #B8A9C9, #E6E6FA);"></div>
+                            </div>
+                            <span class="theme-name">薰衣草梦</span>
+                            <span class="theme-check">✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
